@@ -1,2 +1,37 @@
 #!/usr/bin/env bash
 
+if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
+    gum confirm "Stage all?" && git add .
+fi
+
+PROMPT=$(cat <<DELIMITER
+Create conventional commit message.
+Just output commit message and commit description.
+
+<examples>
+<example>
+feat(n8n): add docker configuration and data setting
+
+- Update .gitignore for ignoring folder data exept .gitkeep file
+- Add .gitkeep file on folder data
+- Add docker-compose.yaml file for n8n configuration
+</example>
+
+<example>
+feat: add redis as dependencies and n8n-network
+
+- Add redis as dependencies
+- Add n8n-network for connecting redis and n8n.
+- Add commit and runner script for helping on command line simplicity
+</example>
+</examples>
+DELIMITER
+)
+
+MESSAGE=$(git diff --staged | mods -f -q "$PROMPT")
+
+echo "$MESSAGE" > .diff
+
+cat .diff
+
+gum confirm "Commit changes?" && git commit -F .diff
