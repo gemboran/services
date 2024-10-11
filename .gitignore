@@ -3,3 +3,6 @@
 **/.env.*
 !**/.env.example
 .diff
+
+**/data/**/*
+!**/data/**/.gitkeep
