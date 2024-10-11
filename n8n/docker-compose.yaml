@@ -1,4 +1,8 @@
 services:
+  redis:
+    image: redis
+    networks:
+      - n8n-network
   n8n:
     image: docker.n8n.io/n8nio/n8n
     container_name: n8n
@@ -6,9 +10,14 @@ services:
       - .env
     volumes:
       - ./data:/home/node/.n8n
+    depends_on:
+      - redis
     networks:
       - cloudflared
+      - n8n-network
 
 networks:
   cloudflared:
     external: true
+  n8n-network:
+    driver: bridge
