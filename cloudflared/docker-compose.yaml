@@ -1,0 +1,13 @@
+services:
+  app:
+    image: cloudflaredman
+    build:
+      context: .
+    env_file:
+      - .env
+    networks:
+      - cloudflared
+
+networks:
+  cloudflared:
+    external: true

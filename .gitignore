@@ -1,0 +1,5 @@
+# Mengabaikan semua file .env di subfolder
+**/.env
+**/.env.*
+!**/.env.example
+.diff
