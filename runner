@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-# Menggunakan gum untuk memilih tipe berdasarkan folder yang ada
 TYPE=$(gum choose $(ls -d */ | cut -f1 -d'/'))
 
-# Memeriksa apakah file docker-compose.yaml ada di folder yang dipilih
 if [ -f "$TYPE/docker-compose.yaml" ]; then
-    echo "Menjalankan docker-compose untuk $TYPE"
+    echo "Running service $TYPE"
     docker-compose -f "$TYPE/docker-compose.yaml" up -d
 else
-    echo "File docker-compose.yaml tidak ditemukan di folder $TYPE"
+    echo "No docker-compose.yaml file at $TYPE"
 fi
 
