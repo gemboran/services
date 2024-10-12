@@ -8,6 +8,8 @@ help() {
     echo "  down    - Menghentikan layanan"
     echo "  status  - Menampilkan status layanan"
     echo "  list    - Menampilkan daftar layanan yang sedang berjalan"
+    echo "  update  - Memperbarui dan me-restart layanan"
+    echo "  logs    - Menampilkan log dari layanan"
     echo "  help    - Menampilkan pesan bantuan ini"
 }
 
@@ -34,11 +36,33 @@ down() {
     fi
 }
 
+update() {
+    TYPE=$(gum choose $(ls -d */ | cut -f1 -d'/'))
+
+    if [ -f "$TYPE/docker-compose.yaml" ]; then
+        docker-compose -f "$TYPE/docker-compose.yaml" pull
+        docker-compose -f "$TYPE/docker-compose.yaml" down
+        docker-compose -f "$TYPE/docker-compose.yaml" up -d
+    else
+        echo "No docker-compose.yaml file at $TYPE"
+    fi
+}
+
 status() {
     TYPE=$(gum choose $(ls -d */ | cut -f1 -d'/'))
 
     if [ -f "$TYPE/docker-compose.yaml" ]; then
         docker-compose -f "$TYPE/docker-compose.yaml" ps
+    else
+        echo "No docker-compose.yaml file at $TYPE"
+    fi
+}
+
+logs() {
+    TYPE=$(gum choose $(ls -d */ | cut -f1 -d'/'))
+
+    if [ -f "$TYPE/docker-compose.yaml" ]; then
+        docker-compose -f "$TYPE/docker-compose.yaml" logs -f
     else
         echo "No docker-compose.yaml file at $TYPE"
     fi
@@ -56,7 +80,7 @@ fi
 
 # Jalankan fungsi yang sesuai berdasarkan argumen
 case "$1" in
-    up|down|status|list|help)
+    up|down|status|list|update|logs|help)
         "$1"
         ;;
     *)

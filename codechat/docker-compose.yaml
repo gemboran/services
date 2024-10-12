@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    networks:
+      - codechat-network
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - codechat-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  codechat:
+    image: codechat/api:develop
+    container_name: codechat
+    env_file:
+      - .env
+    volumes:
+      - ./data/codechat:/codechat/instances
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - 8084:8084
+    networks:
+      - cloudflared
+      - codechat-network
+
+networks:
+  cloudflared:
+    external: true
+  codechat-network:
+    driver: bridge
