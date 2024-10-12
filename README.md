@@ -12,7 +12,9 @@ Gemboran Services adalah proyek untuk mengelola service-service yang dijalankan 
 ## Struktur Proyek
 
 1. `commit`: Script untuk memudahkan proses commit perubahan service dan menghasilkan commit message dengan AI.
-2. `runner`: Script untuk memudahkan menjalankan service atau Docker Compose.
+2. `service`: Script untuk memudahkan menjalankan service atau Docker Compose.
+  - `up`: Menjalankan service
+  - `down`: Menghentikan service
 
 Setiap service memiliki direktori sendiri yang berisi:
 - `docker-compose.yaml`

@@ -5,8 +5,10 @@ if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
 fi
 
 PROMPT=$(cat <<DELIMITER
+<instruction>
 Create conventional commit message.
 Just output commit message and commit description.
+</instruction>
 
 <examples>
 <example>
@@ -30,8 +32,8 @@ DELIMITER
 
 MESSAGE=$(git diff --staged | mods -f -q "$PROMPT")
 
-echo "$MESSAGE" > .diff
+MESSAGE=$(echo "$MESSAGE" | gum write --height=10 --header "Review commit message")
 
-cat .diff
+echo "$MESSAGE" > .diff
 
 gum confirm "Commit changes?" && git commit -F .diff

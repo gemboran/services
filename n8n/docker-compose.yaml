@@ -1,6 +1,8 @@
 services:
   redis:
     image: redis
+    volumes:
+      - ./data/redis:/data
     networks:
       - n8n-network
   n8n:
@@ -9,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/home/node/.n8n
+      - ./data/n8n:/home/node/.n8n
     depends_on:
       - redis
     networks:
