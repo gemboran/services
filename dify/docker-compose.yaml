@@ -1,0 +1,35 @@
+services:
+  api:
+    image: langgenius/dify-api
+    restart: always
+    environment:
+      MODE: api
+    volumes
+      - ./data/api:/app/api/storage
+  
+  worker:
+    image: langgenius/dify-api
+    restart: always
+    environment:
+      MODE: worker
+    volumes
+      - ./data/api:/app/api/storage
+  
+  web:
+    image: langgenius/dify-web
+    restart: always
+  
+  sandbox:
+    image: langgenius/dify-sandbox
+    restart: always
+    volumes:
+      - ./data/sandbox:/dependencies
+
+  weaviate:
+    image: semitechnologies/weaviate
+    profiles:
+      - ''
+      - weaviate
+    restart: always
+    volumes:
+      - ./data/weaviate:/var/lib/weaviate
