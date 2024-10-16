@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+  
+  odoo:
+    container_name: odoo
+    image: odoo
+    restart: always
+    environment:
+      HOST: $POSTGRES_HOST
+      USER: $POSTGRES_USER
+      PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - ./data/odoo:/var/lib/odoo
+      - ./data/config:/etc/odoo
+      - ./data/addons:/mnt/extra-addons
+    depends_on:
+      - db
+    networks:
+      - cloudflared
+      - odoo-network
+
+networks:
+  cloudflared:
+    external: true
+  odoo-network:
+    driver: bridge
