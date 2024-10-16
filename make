@@ -10,7 +10,34 @@ help() {
     echo "  list    - Menampilkan daftar layanan yang sedang berjalan"
     echo "  update  - Memperbarui dan me-restart layanan"
     echo "  logs    - Menampilkan log dari layanan"
+    echo "  service - Membuat layanan baru"
     echo "  help    - Menampilkan pesan bantuan ini"
+}
+
+template=$(cat <<END
+services:
+  $name:
+    container_name: $name
+    networks:
+      - $name-network
+      - cloudflared
+  
+networks:
+  odoo-network:
+    driver: bridge
+  cloudflared:
+    external: true
+END
+)
+
+service() {
+    name=$(gum input --placeholder "Enter service name")
+
+    gum spin --title "Creating service" mkdir $name
+    gum spin --title "Creating service" mkdir $name/data
+    gum spin --title "Creating service" echo "$template" > $name/docker-compose.yaml
+    gum spin --title "Creating service" touch $name/.env.example
+    gum spin --title "Creating service" touch $name/data/.gitkeep
 }
 
 up() {
@@ -80,7 +107,7 @@ fi
 
 # Jalankan fungsi yang sesuai berdasarkan argumen
 case "$1" in
-    up|down|status|list|update|logs|help)
+    up|down|status|list|update|logs|service|help)
         "$1"
         ;;
     *)
