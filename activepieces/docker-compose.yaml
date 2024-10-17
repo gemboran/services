@@ -1,0 +1,41 @@
+services:
+  activepieces:
+    container_name: activepieces
+    image: ghcr.io/activepieces/activepieces
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - 80
+    networks:
+      - activepieces-network
+      - cloudflared
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: $AP_POSTGRES_DATABASE
+      POSTGRES_PASSWORD: $AP_POSTGRES_PASSWORD
+      POSTGRES_USER: $AP_POSTGRES_USERNAME
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - activepieces-network
+
+  redis:
+    image: redis
+    restart: unless-stopped
+    volumes:
+      - './data/redis:/data'
+    networks:
+      - activepieces-network
+
+networks:
+  activepieces-network:
+    driver: bridge
+  cloudflared:
+    external: true
