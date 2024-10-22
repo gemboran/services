@@ -1,0 +1,12 @@
+services:
+  appwrite:
+    container_name: appwrite
+    networks:
+      - appwrite-network
+      - cloudflared
+  
+networks:
+  appwrite-network:
+    driver: bridge
+  cloudflared:
+    external: true
