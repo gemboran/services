@@ -1,6 +1,14 @@
 services:
   appwrite:
     container_name: appwrite
+    image: appwrite/appwrite
+    restart: unless-stopped
+    volumes:
+      - appwrite-uploads:/storage/uploads:rw
+      - appwrite-cache:/storage/cache:rw
+      - appwrite-config:/storage/config:rw
+      - appwrite-certificates:/storage/certificates:rw
+      - appwrite-functions:/storage/functions:rw
     networks:
       - appwrite-network
       - cloudflared

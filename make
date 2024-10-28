@@ -123,23 +123,20 @@ list() {
     docker-compose ls
 }
 
-# Periksa apakah ada argumen yang diberikan
-if [ $# -eq 0 ]; then
-    command=$(gum choose --header="Pilih perintah:" up down status list update logs service help)
-    "$command"
-fi
-
 # Jalankan fungsi yang sesuai berdasarkan argumen
 case "$1" in
-    up|down|status|update|logs|service)
-        "$1" "$2" "$3"
-        ;;
-    list|help)
-        "$1"
+    up|down|status|update|logs|service|list|help)
+        "$@"
         ;;
     *)
-        gum style --foreground 196 "Perintah tidak dikenal: $1"
-        help
-        exit 1
+        # Periksa apakah ada argumen yang diberikan
+        if [ $# -eq 0 ]; then
+            command=$(gum choose --header="Pilih perintah:" up down status list update logs service help)
+            "$command"
+        else
+            gum style --foreground 196 "Perintah tidak dikenal: $1"
+            help
+            exit 1
+        fi
         ;;
 esac
